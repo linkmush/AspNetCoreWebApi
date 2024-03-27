@@ -11,5 +11,6 @@ public class CourseEntity
     public string? LikesInNumbers { get; set; }
     public string? LikesInPoints { get; set; }
     public string? Author { get; set; }
+    public string? ImageUrl { get; set; }
 
 }

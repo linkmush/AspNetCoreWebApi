@@ -14,6 +14,7 @@ public class CourseModel
     public string? LikesInNumbers { get; set; }
     public string? LikesInPoints { get; set; }
     public string? Author { get; set; }
+    public string? ImageUrl { get; set; }
 
     public static implicit operator CourseModel(CourseEntity courseEntity)
     {
@@ -28,6 +29,7 @@ public class CourseModel
             LikesInNumbers = courseEntity.LikesInNumbers,
             LikesInPoints = courseEntity.LikesInPoints,
             Author = courseEntity.Author,
+            ImageUrl = courseEntity.ImageUrl,
         };
     }
 }

@@ -23,7 +23,8 @@ namespace Infrastructure.Migrations
                     IsBestSeller = table.Column<bool>(type: "bit", nullable: false),
                     LikesInNumbers = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LikesInPoints = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Author = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Author = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -34,6 +34,8 @@ namespace WebApi.Controllers
             return NotFound();
         }
 
+        #endregion
+
         [HttpPost]
         public async Task<IActionResult> CreateOne(CourseRegistration course)
         {
@@ -49,6 +51,7 @@ namespace WebApi.Controllers
                     LikesInNumbers = course.LikesInNumbers,
                     LikesInPoints = course.LikesInPoints,
                     Author = course.Author,
+                    ImageUrl = course.ImageUrl
                 };
 
                 _context.Courses.Add(courseEntity);
@@ -60,7 +63,5 @@ namespace WebApi.Controllers
 
             return BadRequest();
         }
-
-        #endregion
     }
 }

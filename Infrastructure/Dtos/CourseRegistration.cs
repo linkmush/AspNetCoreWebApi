@@ -13,6 +13,6 @@ public class CourseRegistration
     public string? LikesInNumbers { get; set; }
     public string? LikesInPoints { get; set; }
     public string? Author { get; set; }
-
+    public string? ImageUrl { get; set; }
     //Jag måste ha samma properties i min viewmodel som i min DTO på webapi för att få det att funka.Men det är okej att ha flera properties i min viewmodel som inte finns med i min DTO på webapiet
 }
