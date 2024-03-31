@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Contexts;
 using Infrastructure.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,7 @@ namespace WebApi.Controllers
 
         #endregion
 
+        [Authorize]               // UPDATE och Delete ska också skyddas med Accesstoken. 
         [HttpPost]
         public async Task<IActionResult> CreateOne(CourseRegistration course)
         {

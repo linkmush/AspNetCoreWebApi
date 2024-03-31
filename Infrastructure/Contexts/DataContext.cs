@@ -7,4 +7,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 {
     public DbSet<CourseEntity> Courses { get; set; }
     public DbSet<SubscriberEntity> Subscribers { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
+
 }
