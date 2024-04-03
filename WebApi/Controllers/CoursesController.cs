@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Contexts;
 using Infrastructure.Entities;
+using Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,8 @@ namespace WebApi.Controllers
 
         #endregion
 
+        #region CREATE
+
         [Authorize]               // UPDATE och Delete ska också skyddas med Accesstoken. 
         [HttpPost]
         public async Task<IActionResult> CreateOne(CourseRegistration course)
@@ -65,5 +68,58 @@ namespace WebApi.Controllers
 
             return BadRequest();
         }
+
+        #endregion
+
+        #region Update
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCourse(int id, CourseUpdateModel course)
+        {
+            var courseEntity = await _context.Courses.FirstOrDefaultAsync(x => x.Id == id);
+            if (courseEntity != null)
+            {
+                courseEntity.Title = course.Title;
+                courseEntity.Price = course.Price;
+                courseEntity.DiscountPrice = course.DiscountPrice;
+                courseEntity.Hours = course.Hours;
+                courseEntity.IsBestSeller = course.IsBestSeller;
+                courseEntity.LikesInNumbers = course.LikesInNumbers;
+                courseEntity.LikesInPoints = course.LikesInPoints;
+                courseEntity.Author = course.Author;
+                courseEntity.ImageUrl = course.ImageUrl;
+
+                _context.Courses.Update(courseEntity);
+                await _context.SaveChangesAsync();
+
+                return Ok(courseEntity);
+            }
+
+            return NotFound();
+        }
+
+        #endregion
+
+        #region DELETE
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCourse(int id)
+        {
+            var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == id);
+            if (course != null)
+            {
+                _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+
+            return NotFound();
+
+        }
+
+        #endregion
     }
 }

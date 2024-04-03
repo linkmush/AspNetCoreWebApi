@@ -20,7 +20,7 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 app.UseSwagger();
 app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "Silicon Web Api v1"));
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication();  // vem är du? för att logga in.
+app.UseAuthorization(); // vad får du göra? roll
 app.MapControllers();
 app.Run();
