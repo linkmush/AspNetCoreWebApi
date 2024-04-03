@@ -34,10 +34,9 @@ namespace WebApi.Controllers
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                        //new(ClaimTypes.Email, form.Email),
-                        //new(ClaimTypes.Name, form.Email),
-                        new(ClaimTypes.Name, form.GenerateToken)
-                    }),
+                        new(ClaimTypes.Email, form.Email),
+                        new(ClaimTypes.Name, form.Email),
+                     }),
                     Expires = DateTime.UtcNow.AddDays(1),
                     Issuer = _configuration["Jwt:Issuer"],
                     Audience = _configuration["Jwt:Audience"],
