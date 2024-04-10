@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Contexts;
 using Infrastructure.Entities;
+using Infrastructure.Factory;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,14 +21,40 @@ namespace WebApi.Controllers
 
 
         #region GET
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll() => Ok(await _context.Courses.Include(x => x.Category).ToListAsync());
+
         [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(await _context.Courses.ToListAsync());
+        public async Task<IActionResult> GetAll(string category = "", string searchQuery = "")
+        {
+            var query = _context.Courses.Include(i => i.Category).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(category) && category != "all")
+                query = query.Where(x => x.Category!.CategoryName == category);
+
+
+            if (!string.IsNullOrEmpty(searchQuery))
+                query = query.Where(x => x.Title.Contains(searchQuery) || x.Author!.Contains(searchQuery));
+
+            query = query.OrderBy(o => o.LastUpdated);
+
+            var courses = await query.ToListAsync();
+
+            var response = new CourseResult
+            {
+                Succeeded = true,
+                Courses = CourseFactory.Create(courses)
+            };
+
+
+            return Ok(response);
+        }
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == id);
+            var course = await _context.Courses.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
             if (course != null)
             {
                 return Ok(course);
@@ -40,23 +67,36 @@ namespace WebApi.Controllers
 
         #region CREATE
 
-        [Authorize]               // UPDATE och Delete ska också skyddas med Accesstoken. 
+       // [Authorize]               // UPDATE och Delete ska också skyddas med Accesstoken. 
         [HttpPost]
         public async Task<IActionResult> CreateOne(CourseRegistration course)
         {
             if (ModelState.IsValid)
             {
+                var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryName == course.CategoryName);
+
+                if (category == null)
+                {
+                    category = new CategoryEntity { CategoryName = course.CategoryName };
+                    _context.Categories.Add(category);
+                    await _context.SaveChangesAsync();
+                }
+
                 var courseEntity = new CourseEntity
                 {
                     Title = course.Title,
+                    Author = course.Author,
                     Price = course.Price,
                     DiscountPrice = course.DiscountPrice,
                     Hours = course.Hours,
-                    IsBestSeller = course.IsBestSeller,
                     LikesInNumbers = course.LikesInNumbers,
-                    LikesInPoints = course.LikesInPoints,
-                    Author = course.Author,
-                    ImageUrl = course.ImageUrl
+                    LikesInProcent = course.LikesInProcent,
+                    IsDigital = course.IsDigital,
+                    IsBestSeller = course.IsBestSeller,
+                    ImageUrl = course.ImageUrl,
+                    CategoryId = category.Id,
+                    Created = DateTime.Now,
+                    LastUpdated = DateTime.Now
                 };
 
                 _context.Courses.Add(courseEntity);
@@ -73,22 +113,39 @@ namespace WebApi.Controllers
 
         #region Update
 
-        [Authorize]
+        // [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourse(int id, CourseUpdateModel course)
         {
-            var courseEntity = await _context.Courses.FirstOrDefaultAsync(x => x.Id == id);
+            var courseEntity = await _context.Courses.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
             if (courseEntity != null)
             {
+                var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryName == course.CategoryName);
+
+                if (existingCategory == null)
+                {
+                    var newCategory = new CategoryEntity { CategoryName = course.CategoryName };
+                    _context.Categories.Add(newCategory);
+                    await _context.SaveChangesAsync();
+
+                    courseEntity.CategoryId = newCategory.Id;
+                }
+                else
+                {
+                    courseEntity.CategoryId = existingCategory.Id;
+                }
+
                 courseEntity.Title = course.Title;
+                courseEntity.Author = course.Author;
                 courseEntity.Price = course.Price;
                 courseEntity.DiscountPrice = course.DiscountPrice;
                 courseEntity.Hours = course.Hours;
-                courseEntity.IsBestSeller = course.IsBestSeller;
                 courseEntity.LikesInNumbers = course.LikesInNumbers;
-                courseEntity.LikesInPoints = course.LikesInPoints;
-                courseEntity.Author = course.Author;
+                courseEntity.LikesInProcent = course.LikesInProcent;
+                courseEntity.IsDigital = course.IsDigital;
+                courseEntity.IsBestSeller = course.IsBestSeller;
                 courseEntity.ImageUrl = course.ImageUrl;
+                courseEntity.LastUpdated = DateTime.Now;
 
                 _context.Courses.Update(courseEntity);
                 await _context.SaveChangesAsync();
@@ -103,7 +160,7 @@ namespace WebApi.Controllers
 
         #region DELETE
 
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
