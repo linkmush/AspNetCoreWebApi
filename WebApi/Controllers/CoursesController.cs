@@ -67,7 +67,7 @@ namespace WebApi.Controllers
 
         #region CREATE
 
-       // [Authorize]               // UPDATE och Delete ska också skyddas med Accesstoken. 
+        // [Authorize]          // UPDATE och Delete ska också skyddas med Accesstoken. 
         [HttpPost]
         public async Task<IActionResult> CreateOne(CourseRegistration course)
         {

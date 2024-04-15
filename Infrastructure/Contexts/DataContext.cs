@@ -9,5 +9,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<CategoryEntity> Categories { get; set; }
     public DbSet<SubscriberEntity> Subscribers { get; set; }
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<ContactEntity> Contacts { get; set; }
 
 }
