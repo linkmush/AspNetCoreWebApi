@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         //public async Task<IActionResult> GetAll() => Ok(await _context.Courses.Include(x => x.Category).ToListAsync());
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string category = "", string searchQuery = "")
+        public async Task<IActionResult> GetAll(string category = "", string searchQuery = "", int pageNumber = 1, int pageSize = 10)
         {
             var query = _context.Courses.Include(i => i.Category).AsQueryable();
 
@@ -43,8 +43,11 @@ namespace WebApi.Controllers
             var response = new CourseResult
             {
                 Succeeded = true,
-                Courses = CourseFactory.Create(courses)
+                TotalItems = await query.CountAsync()
+                //Courses = CourseFactory.Create(courses)
             };
+            response.TotalPages = (int)Math.Ceiling(response.TotalItems / (double)pageSize);
+            response.Courses = CourseFactory.Create(await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync());
 
 
             return Ok(response);
@@ -67,7 +70,7 @@ namespace WebApi.Controllers
 
         #region CREATE
 
-        // [Authorize]          // UPDATE och Delete ska också skyddas med Accesstoken. 
+        //[Authorize]          // UPDATE och Delete ska också skyddas med Accesstoken. 
         [HttpPost]
         public async Task<IActionResult> CreateOne(CourseRegistration course)
         {
@@ -113,7 +116,7 @@ namespace WebApi.Controllers
 
         #region Update
 
-        // [Authorize]
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourse(int id, CourseUpdateModel course)
         {
@@ -160,7 +163,7 @@ namespace WebApi.Controllers
 
         #region DELETE
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
