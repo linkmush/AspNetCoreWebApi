@@ -21,5 +21,4 @@ public class CourseRegistration
     public DateTime LastUpdated { get; set; }
 
     public string CategoryName { get; set; } = null!;
-    //Jag måste ha samma properties i min viewmodel som i min DTO på webapi för att få det att funka.Men det är okej att ha flera properties i min viewmodel som inte finns med i min DTO på webapiet
 }

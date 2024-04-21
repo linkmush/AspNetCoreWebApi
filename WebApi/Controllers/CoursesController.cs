@@ -21,8 +21,6 @@ namespace WebApi.Controllers
 
 
         #region GET
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll() => Ok(await _context.Courses.Include(x => x.Category).ToListAsync());
 
         [HttpGet]
         public async Task<IActionResult> GetAll(string category = "", string searchQuery = "", int pageNumber = 1, int pageSize = 10)
@@ -44,7 +42,6 @@ namespace WebApi.Controllers
             {
                 Succeeded = true,
                 TotalItems = await query.CountAsync()
-                //Courses = CourseFactory.Create(courses)
             };
             response.TotalPages = (int)Math.Ceiling(response.TotalItems / (double)pageSize);
             response.Courses = CourseFactory.Create(await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync());
@@ -70,7 +67,7 @@ namespace WebApi.Controllers
 
         #region CREATE
 
-        //[Authorize]          // UPDATE och Delete ska också skyddas med Accesstoken. 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateOne(CourseRegistration course)
         {

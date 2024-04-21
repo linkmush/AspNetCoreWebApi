@@ -12,7 +12,6 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [UseApiKey]
-    //[Authorize]
     public class SubscribersController(DataContext context) : ControllerBase
     {
 
@@ -20,7 +19,7 @@ namespace WebApi.Controllers
 
         #region CREATE
 
-        [HttpPost] // Create
+        [HttpPost]
         public async Task<IActionResult> Create(SubscriberDto dto)
         {
             if (ModelState.IsValid)

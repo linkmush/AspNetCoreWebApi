@@ -15,8 +15,6 @@ public class SubscriberDto
 
     public bool StartupsWeekly { get; set; }
 
-    //Jag måste ha samma properties i min viewmodel som i min DTO på webapi för att få det att funka.Men det är okej att ha flera properties i min viewmodel som inte finns med i min DTO på webapiet
-
     public bool Podcasts { get; set; }
 
     [Required]
